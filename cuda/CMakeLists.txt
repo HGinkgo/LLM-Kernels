@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(llm_infer_cuda LANGUAGES CXX CUDA)
+project(LLM-Kernels LANGUAGES CXX CUDA)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

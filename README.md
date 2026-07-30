@@ -1,4 +1,4 @@
-# llm-infer-kernels
+# LLM-Kernels
 
 面向 LLM 推理的 CUDA/Triton 算子学习仓库，记录从基础实现到性能优化的演进过程。
 当前主要在 RTX 3090（`sm_86`）上开发和测试，不以生产环境直接使用为目标。

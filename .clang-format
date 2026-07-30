@@ -7,3 +7,8 @@ AllowShortFunctionsOnASingleLine: Empty
 BreakTemplateDeclarations: Yes
 PointerAlignment: Left
 ReferenceAlignment: Left
+MaxEmptyLinesToKeep: 1
+KeepEmptyLines:
+  AtStartOfBlock: false
+  AtStartOfFile: false
+  AtEndOfFile: false
