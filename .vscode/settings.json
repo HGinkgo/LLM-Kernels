@@ -1,0 +1,41 @@
+{
+    "editor.detectIndentation": false,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    "files.trimFinalNewlines": true,
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
+    },
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
+    },
+    "[cuda-cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true,
+        "editor.insertSpaces": true,
+        "editor.tabSize": 4
+    },
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.clang_format_fallbackStyle": "{ BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, ColumnLimit: 100, PointerAlignment: Left, ReferenceAlignment: Left }",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/cuda/compile_commands.json",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/cuda/common",
+        "${workspaceFolder}/cuda/reduce/include",
+        "/usr/local/cuda/include"
+    ],
+    "C_Cpp.default.defines": [
+        "__CUDACC__"
+    ],
+    "files.associations": {
+        "*.cu": "cuda-cpp",
+        "*.cuh": "cuda-cpp"
+    }
+}
