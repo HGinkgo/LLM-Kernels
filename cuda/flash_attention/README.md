@@ -1,7 +1,7 @@
 # Attention / FlashAttention
 
-本目录实现 LLM 推理中的 causal self-attention。当前完成 Naive Attention，后续将在相同
-数学结果上实现不保存完整 Score/Probability 矩阵的教学版 FlashAttention。
+本目录实现 LLM 推理中的 causal self-attention。当前包含 Naive Attention 和不保存完整
+Score/Probability 矩阵的教学版 FlashAttention V1-like 前向实现。
 
 ## 数据布局
 
@@ -44,6 +44,33 @@ Q/K [B,S,H,D]
 该版本显式保存 Score 和 Probability，空间复杂度为 `O(B * H * S^2)`，仅作为正确性
 baseline 和 FlashAttention 的学习起点。
 
+## 教学版 FlashAttention V1-like
+
+`flash_attention_tiled.cu` 使用一个 block 处理一个 `(batch, head, query_position)`，将
+Q 保存在寄存器中，按 tile 将 K/V 搬到 shared memory，并使用 online softmax 直接更新
+输出累加器。整个计算过程不落地完整的 `S x S` Score/Probability 矩阵：
+
+```text
+Q -> registers
+K/V tile -> shared memory
+QK / sqrt(D) -> online softmax
+online weighted V accumulation
+    -> Output
+```
+
+当前实现为教学版本，配置固定为：
+
+```text
+HEAD_DIM      = 64
+BLOCK_THREADS = 128
+KEY_TILE      = 32
+causal        = true
+dtype         = float32
+```
+
+该版本的重点是展示 tiled attention 和 online softmax，尚未使用 warp shuffle、Tensor
+Core、float4 加载或 double buffering，因此小规模输入下可能慢于 Naive baseline。
+
 ## 正确性与性能
 
 测试环境：Windows + WSL 2、RTX 4060 Ti、CUDA 13.3、Release、`sm_89`。
@@ -81,6 +108,21 @@ benchmark 预热 20 次，采集 20 个样本，每个样本重复 100 次。下
 当前实现中 QK 约占端到端中位延迟的 70%，是最主要的耗时阶段。该结论只适用于当前
 shape 和朴素线程映射。
 
+FlashAttention 教学版本使用相同输入形状进行测试：
+
+```text
+Output max_abs_err = 0.00000019
+Memcheck           = 0 errors
+Racecheck          = 0 hazards
+Synccheck          = 0 errors
+```
+
+benchmark 预热 20 次，采集 20 个样本，每个样本重复 100 次：
+
+| Kernel | Median（ms） | P90（ms） |
+| --- | ---: | ---: |
+| FlashAttention V1-like | 1.0113 | 1.0174 |
+
 ## 构建与运行
 
 以下命令从仓库根目录执行：
@@ -89,6 +131,13 @@ shape 和朴素线程映射。
 cmake -S cuda -B build/cuda \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_CUDA_ARCHITECTURES=89
+cmake --build build/cuda --target attention_flash -j
+./build/cuda/bin/attention_flash
+```
+
+运行 Naive baseline：
+
+```bash
 cmake --build build/cuda --target attention_naive -j
 ./build/cuda/bin/attention_naive
 ```
@@ -96,17 +145,21 @@ cmake --build build/cuda --target attention_naive -j
 只执行正确性测试：
 
 ```bash
-./build/cuda/bin/attention_naive --no-benchmark
+./build/cuda/bin/attention_flash --no-benchmark
 ```
 
 执行内存错误检查：
 
 ```bash
 compute-sanitizer --tool memcheck --error-exitcode 1 \
-    ./build/cuda/bin/attention_naive --no-benchmark
+    ./build/cuda/bin/attention_flash --no-benchmark
+compute-sanitizer --tool racecheck --error-exitcode 1 \
+    ./build/cuda/bin/attention_flash --no-benchmark
+compute-sanitizer --tool synccheck --error-exitcode 1 \
+    ./build/cuda/bin/attention_flash --no-benchmark
 ```
 
 ## 下一步
 
-`flash_attention_tiled.cu` 将使用 tiled Q/K/V 和 online softmax，在不保存完整
-`S x S` Score/Probability 矩阵的情况下计算相同输出。
+后续可以将当前教学版本优化为一个 warp 负责一个 query，使用 warp-level reduction 和
+向量化加载，再逐步尝试 query tile 与 double buffering。

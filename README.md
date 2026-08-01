@@ -27,7 +27,7 @@
 | CUDA Linear Algebra | GEMV V1-V3、SGEMM V1-V7 | 已完成 kernel 版本 |
 | CUDA LLM | RoPE V1-V2 | 已完成 |
 | CUDA Attention | Naive Attention | 已完成 |
-| CUDA Attention | 简化 FlashAttention | 待实现 |
+| CUDA Attention | 简化 FlashAttention V1-like | 已完成 |
 | Triton | 代表性 CUDA 算子的 Triton 版本 | 待实现 |
 
 ## SGEMM 优化路径
@@ -82,6 +82,7 @@ cmake --build build/cuda --target sgemm -j
 ./build/cuda/bin/gemv
 ./build/cuda/bin/sgemm --kernel all
 ./build/cuda/bin/sgemm --kernel v7 --no-benchmark
+./build/cuda/bin/attention_flash --no-benchmark
 ```
 
 SGEMM 支持选择 `v4`、`v5`、`v6`、`v7` 或 `all`。默认先与 CPU reference 比较
