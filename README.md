@@ -26,7 +26,8 @@
 | CUDA Normalization | RMSNorm V1-V4、LayerNorm V1-V4 | 已完成 |
 | CUDA Linear Algebra | GEMV V1-V3、SGEMM V1-V7 | 已完成 kernel 版本 |
 | CUDA LLM | RoPE V1-V2 | 已完成 |
-| CUDA Attention | Naive Attention、FlashAttention | 待实现 |
+| CUDA Attention | Naive Attention | 已完成 |
+| CUDA Attention | 简化 FlashAttention | 待实现 |
 | Triton | 代表性 CUDA 算子的 Triton 版本 | 待实现 |
 
 ## SGEMM 优化路径
