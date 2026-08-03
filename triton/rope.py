@@ -1,2 +1,0 @@
-"""Triton RoPE kernel placeholder."""
-

@@ -1,2 +1,0 @@
-"""Triton RMSNorm kernel placeholder."""
-

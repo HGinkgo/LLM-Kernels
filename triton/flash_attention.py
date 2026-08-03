@@ -1,2 +1,0 @@
-"""Triton FlashAttention kernel placeholder."""
-

@@ -9,7 +9,7 @@
 ## 目录
 
 - `cuda/`：按算子分类的 CUDA 实现。
-- `triton/`：Triton 学习目录，目前为占位内容。
+- `triton/`：代表性算子的 Triton 实现与 PyTorch baseline。
 
 已完成的算子通常包含核函数、CPU reference、正确性测试、benchmark 和优化记录。kernel
 的线程映射、数据布局、边界处理及核心优化以手写和理解为主，测试与工程代码允许使用 AI
@@ -28,7 +28,7 @@
 | CUDA LLM | RoPE V1-V2 | 已完成 |
 | CUDA Attention | Naive Attention | 已完成 |
 | CUDA Attention | 简化 FlashAttention V1-like | 已完成 |
-| Triton | 代表性 CUDA 算子的 Triton 版本 | 待实现 |
+| Triton | Elementwise Add、Matrix Softmax | 已完成基础版本 |
 
 ## SGEMM 优化路径
 
